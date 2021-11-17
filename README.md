@@ -1,6 +1,12 @@
 # (SNARC) Sierra Nevada Aquatic Research Consortium
 Data Exploration of the Sierra Nevada Lakes Inventory Project (SLIP) 
 
+Author: Matthew D. Green
+
+Title: Compositional Turnover in Sierra Nevada Lakes as a Function of Spatial Connectivity and Predation
+
+Status: In Prep.
+
 ![](Images/pic1.png)
 
 
