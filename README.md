@@ -22,3 +22,8 @@ Map of Fish Presence: https://rpubs.com/mgree013/836802
 ## Zooplankton Species Specific Desnity Repsonse to Fish Presence
 
 ![](Figs/Fig3.png)
+
+
+## Zooplankton CWM (Communnity Weighted Mean) of Body Size as a function of Fish Presence
+
+![](Figs/Fig4.png)
