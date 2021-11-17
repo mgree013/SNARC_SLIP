@@ -116,7 +116,7 @@ mapview(snw_sf, zcol="N0", layer.name="Species Richness")
 mapview(snw_sf, zcol="N1", layer.name="Species Diversity")
 
 #fish Presence
-mapview(env_sf, zcol="actual_fish_presence", layer.name="Fish Presence")
+mapview(snw_sf, zcol="actual_fish_presence", layer.name="Fish Presence")
 #########################################################################
 
 #2B) Explore Relationships among Diversity as a function of environmental variables: Visualization and Stats
@@ -160,7 +160,7 @@ env_div%>%
   scale_fill_viridis(discrete = TRUE)+
   facet_wrap(~var, scales = "free")+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                                          panel.border = element_blank(),panel.background = element_blank())
+                                          panel.border = element_blank(),panel.background = element_blank(),legend.position = "none")
 
 #remove unwanted columns for analysis due to missing data
 env_divz<-env_div%>%
@@ -217,16 +217,20 @@ for(i in 1:(ncol(regional.names))){
 env_abund%>%
   ggplot(aes(x=actual_fish_presence,y=log(zoop_density+1),fill=actual_fish_presence))+
   geom_boxplot()+
-  xlab("Fish Presence")+ylab("Lod Density")+
+  xlab("Fish Presence")+ylab("Log Density")+
   scale_fill_viridis(discrete = TRUE)+
-  facet_wrap(~Species_Name, scales="free")
+  facet_wrap(~Species_Name, scales="free")+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                                  panel.border = element_blank(),panel.background = element_blank())
 
 env_abund%>%
   ggplot(aes(x=Species_Name,y=(zoop_density),fill=actual_fish_presence))+
   geom_bar(stat = "identity")+
   facet_wrap(~actual_fish_presence, scales="free")+
   scale_fill_viridis(discrete = TRUE)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  ylab("Zooplankton Density")+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                                                 panel.border = element_blank(),panel.background = element_blank())
+
 
 env_abund$Species_Name<-as.factor(env_abund$Species_Name)
 clean_zoopzz$lake_id<-as.integer(clean_zoopzz$lake_id)
