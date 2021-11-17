@@ -364,7 +364,7 @@ ordihull(dune.nmds, groups=sp_abund_env$actual_fish_presence, draw="polygon", la
 ordisurf(dune.nmds, sp_abund_env$lake_elevation_nbr, prioirty=,labcex=0.9, add = T,col="forestgreen")
 
 #PERMANOVA analysis-Whats driving variation we see above?
-adonis2(species ~ sp_abund_env$lake_elevation_nbr+sp_abund_env$actual_fish_presence+sp_abund_env$lake_drainage_name, permutations = 999, method = "bray")
+#adonis2(species ~ sp_abund_env$lake_elevation_nbr+sp_abund_env$actual_fish_presence+sp_abund_env$lake_drainage_name, permutations = 999, method = "bray")
 
 #The Drainage Basins explain most of the variation (19%), then elevation (7%), and then fish presence (1%)...still a lot fo unexplained variation
 #fish presence has larger hull indicating more community combinations, potentially confounded by elevation
