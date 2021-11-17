@@ -27,3 +27,7 @@ Map of Fish Presence: https://rpubs.com/mgree013/836802
 ## Zooplankton CWM (Communnity Weighted Mean) of Body Size as a function of Fish Presence
 
 ![](Figs/Fig4.png)
+
+## Zooplankton CWM (Communnity Weighted Mean) along Elvational Gradient
+
+![](Figs/Fig6.png)
