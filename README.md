@@ -14,6 +14,11 @@ Map of Fish Presence: https://rpubs.com/mgree013/836802
 
 ![](Figs/Fig1.png)
 
-## Zooplankton Diversity Patterns as a function ofFish Presence
+## Zooplankton Diversity Patterns as a function of Fish Presence
 
 ![](Figs/Fig2.png)
+
+
+## Zooplankton Species Specific Desnity Repsonse to Fish Presence
+
+![](Figs/Fig3.png)
