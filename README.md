@@ -8,7 +8,7 @@ Status: In Prep.
 ![](Images/pic1.png)
 
 
-## Spatial Interactive Maps of Beta Diveristy For Zooplankton in Sierra Nevada, CA Lakes
+## Spatial Interactive Maps of Fish Presnce and Zooplankton Diveristy in Sierra Nevada, CA Lakes
 
 Map of Zooplankton Species Diversity: http://rpubs.com/mgree013/836800
 
