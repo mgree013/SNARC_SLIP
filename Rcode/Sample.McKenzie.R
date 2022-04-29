@@ -372,6 +372,7 @@ ordisurf(dune.nmds, sp_abund_env$lake_elevation_nbr, prioirty=,labcex=0.9, add =
 #########################################################################
 #2F) Structural Equation Models (SEM'S)-Causal Analysis
 
+
 smod1 = ' CWM ~ lake_elevation_nbr+actual_fish_presence+lake_max_depth+lake_area_nbr'
 
 smod1.fit <- sem(smod1,data=env_cwm)
