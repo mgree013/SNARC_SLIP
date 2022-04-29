@@ -134,6 +134,17 @@ env_div%>%
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank(),legend.position = "none")
 
+env_div%>%
+  gather(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
+  ggplot(aes(x=lake_elevation_nbr, y=value, colour=as.factor(actual_fish_presence)))+
+  geom_point()+
+  geom_smooth(method = "lm",se=F)+
+  scale_color_viridis_d()+
+  xlab("Elevation (m)")+
+  facet_grid(var~actual_fish_presence, scales = "free")+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank(),legend.position = "none")
+
 #Analysis:heres a looping linear model
 regional.names<-env_div %>%
   dplyr::select(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD)
