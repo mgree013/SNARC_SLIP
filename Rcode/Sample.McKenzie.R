@@ -14,7 +14,7 @@ lapply(Packages, library, character.only = TRUE)
 #Load all data: Run Script "Download_Slip_Data.R"
 source("Rcode/Download_Slip_Data.R", echo = TRUE)
 ########################################################################################################################################################################
-#Part 1) Organize Species and Environmental Data Set: There are a lot of seperate files that need to be cleaned and then merged together
+#Part 1) Organize Species and Environmental Data Set: There are a lot of separate files that need to be cleaned and then merged together
 
 #########################################################################
 #1A) Correct Sub-sample and uneven sampling data issues
