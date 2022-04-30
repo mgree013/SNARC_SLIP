@@ -331,6 +331,9 @@ av_zoop_body_size_new<-dt11%>%
   remove_rownames()%>%
   column_to_rownames('Species_Name')
 
+av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv",row.names = 1)
+av_zoop_body_size_new<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
+
 pivot_clean_zoopzz<-clean_zoopzz%>%pivot_wider(names_from = "Species_Name",values_from="zoop_density")%>%
   unite("id_date",lake_id:survey_date)%>%
   dplyr::select(-c(Lecane_spp.,Monostyla_spp.,Simocephalus_serrulatus))%>%
@@ -350,7 +353,7 @@ cwm=tres_bm$CWM
 cwm<-cwm%>%
   rownames_to_column("id_date")%>%
   separate("id_date",sep="_" ,into=c("lake_id", "survey_date"))%>%
-  dplyr::rename(CWM=mean_body_size)
+  dplyr::rename(CWM=Body_mass_ug) #Body_mass_ug or mean_body_size
 
 cwm$lake_id<-as.integer(cwm$lake_id)
 env_cwm<-left_join(env,cwm, by=c("lake_id", "survey_date"))%>%filter(lake_id !="11505" & lake_id !="42219" &lake_id !="71257" &lake_id !="71282" )%>%filter(CWM < 4000)
@@ -493,26 +496,36 @@ semPaths(smod3.fit, what='std', layout = "tree3", intercepts = FALSE, residuals 
 #Mass Abundance
 
 species_all<-pivot_clean_zoopzz%>%rownames_to_column("Site")%>%pivot_longer(-Site, names_to="Taxon", values_to="abundance")%>%filter(abundance>0)
-envv<-env%>%dplyr::rename(Site=lake_id)
+envv<-env%>%unite("Site",lake_id:survey_date)
 
-body_size<-av_zoop_body_size_new%>%rownames_to_column("Taxon")
+#body_size<-av_zoop_body_size_new%>%rownames_to_column("Taxon")
+
+av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv")
+body_size<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
 
 All<-left_join(species_all,body_size, by="Taxon")
 envv$Site<-as.factor(envv$Site)
 All$Site<-as.factor(All$Site)
-All_all<-left_join(All,envv, by="Site")
+All_all<-left_join(All,envv, by="Site")%>%filter(actual_fish_presence!="NA")
 
 #Local Lakes Level
 All_all%>%
-  ggplot(aes(x=log(mean_body_size),y=log(abundance)))+
+  ggplot(aes(x=log(Body_mass_ug),y=log(abundance)))+
   geom_point()+
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm")+theme_bw()+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank())
+
 
 All_all%>%
-  ggplot(aes(x=mean_body_size,y=abundance, color=actual_fish_presence))+
+  ggplot(aes(x=(Body_mass_ug),y=log(abundance), colour=actual_fish_presence))+
   geom_point()+
   geom_smooth(method = "lm")+
-  facet_grid(~actual_fish_presence)
+  scale_color_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
+  facet_grid(~actual_fish_presence)+theme_bw()+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank())
 
 #Network Level
 
