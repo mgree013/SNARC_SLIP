@@ -361,6 +361,15 @@ env_cwm<-left_join(env,cwm, by=c("lake_id", "survey_date"))%>%filter(lake_id !="
 
 #########################################################################
 #Visualize influence of fish and elevation
+
+env_cwm%>%
+  ggplot(aes(x=lake_drainage_name,y=CWM, fill=actual_fish_presence))+
+  geom_boxplot()+
+  xlab("Fish Presence")+
+  scale_fill_viridis(discrete = TRUE,name = "Lake Network")+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank())
+
 env_cwm%>%
   ggplot(aes(x=actual_fish_presence,y=CWM, fill=actual_fish_presence))+
   geom_boxplot()+
@@ -368,6 +377,7 @@ env_cwm%>%
   scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank())
+
 
 dog<-glm(CWM~actual_fish_presence*lake_elevation_nbr,family=gaussian(link="identity"),env_cwm)
 summary(dog)
@@ -439,10 +449,11 @@ plot(dune.nmds,typ= "n", xlab = "NMDS Axis 1", ylab = "NMDS Axis 2")
 #text(dune.nmds$species[,1], dune.nmds$species[,2], rownames(dune.nmds$species), cex=0.7, col ="black")
 points(dune.nmds$points[,1], dune.nmds$points[,2],  pch = 1) 
 ordihull(dune.nmds, groups=sp_abund_env$actual_fish_presence, draw="polygon", label=T)
+ordihull(dune.nmds, groups=sp_abund_env$lake_drainage_name, draw="polygon", label=T)
 ordisurf(dune.nmds, sp_abund_env$lake_elevation_nbr, prioirty=,labcex=0.9, add = T,col="forestgreen")
 
 #PERMANOVA analysis-Whats driving variation we see above?
-adonis2(dune.rel ~ sp_abund_env$actual_fish_presence+sp_abund_env$lake_elevation_nbr, permutations = 99, method = "bray")
+adonis2(dune.rel ~ sp_abund_env$actual_fish_presence+sp_abund_env$lake_elevation_nbr+sp_abund_env$lake_drainage_name, permutations = 99, method = "bray")
 betad <- betadiver(dune.rel, "z")
 adonis(betad ~ sp_abund_env$actual_fish_presence+sp_abund_env$lake_elevation_nbr, data=species, perm=200)
 
