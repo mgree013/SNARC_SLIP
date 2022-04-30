@@ -417,6 +417,7 @@ null<-glm(CWM~1,family=gaussian(link = "identity"),  data=env_cwm)
 
 reported.table2 <- bbmle::AICtab(mod1,mod2,mod3, null,weights = TRUE, sort = FALSE)
 reported.table2
+r2(mod3)
 
 pseudoR1 <- ((mod1$null.deviance-mod1$deviance)/mod1$null.deviance)
 pseudoR1
@@ -500,11 +501,11 @@ envv<-env%>%unite("Site",lake_id:survey_date)
 
 #body_size<-av_zoop_body_size_new%>%rownames_to_column("Taxon")
 
-#av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv")
+av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv")
+#av_zoop_body_size_new<-read.csv("data/body_mass.csv")
+
 body_size<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
 
-av_zoop_body_size_new<-read.csv("data/body_mass.csv")
-body_size<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
 
 All<-left_join(species_all,body_size, by="Taxon")
 envv$Site<-as.factor(envv$Site)
