@@ -500,7 +500,10 @@ envv<-env%>%unite("Site",lake_id:survey_date)
 
 #body_size<-av_zoop_body_size_new%>%rownames_to_column("Taxon")
 
-av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv")
+#av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv")
+body_size<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
+
+av_zoop_body_size_new<-read.csv("data/body_mass.csv")
 body_size<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
 
 All<-left_join(species_all,body_size, by="Taxon")
@@ -519,7 +522,8 @@ All_all%>%
 
 
 All_all%>%
-  ggplot(aes(x=(Body_mass_ug),y=log(abundance), colour=actual_fish_presence))+
+  #filter(Body_mass_ug>0.06)%>%
+  ggplot(aes(x=log(Body_mass_ug),y=log(abundance), colour=actual_fish_presence))+
   geom_point()+
   geom_smooth(method = "lm")+
   scale_color_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
