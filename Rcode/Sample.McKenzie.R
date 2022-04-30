@@ -8,7 +8,7 @@
 
 
 #Load Packages
-Packages <- c("tidyverse", "ggplot2", "vegan", "reshape2","reshape", "adespatial", "sf", "mapview", "viridis", "FD","multcomp","semPlot","lavaan")
+Packages <- c("tidyverse", "ggplot2", "vegan", "reshape2","reshape", "adespatial", "sf", "mapview", "viridis", "FD","multcomp","semPlot","lavaan", "performance")
 lapply(Packages, library, character.only = TRUE)
 
 #Load all data: Run Script "Download_Slip_Data.R"
@@ -121,10 +121,11 @@ mapview(snw_sf, zcol="actual_fish_presence", layer.name="Fish Presence")
 
 #2B) Explore Relationships among Diversity as a function of environmental variables: Visualization and Stats
 
-env_div<-left_join(env,local_diversity, by=c("lake_id", "survey_date"))%>%filter(lake_id !="11505" & lake_id !="42219" &lake_id !="71257" &lake_id !="71282" )
+env_div<-left_join(env,local_diversity, by=c("lake_id", "survey_date"))%>%filter(lake_id !="11505" & lake_id !="42219" &lake_id !="71257" &lake_id !="71282" )%>%
+  mutate(Com.Size=log(Com.Size+1))
 
 env_div%>%
-  gather(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
+  gather(N0,  N1,  E10, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
   ggplot(aes(x=lake_elevation_nbr, y=value, colour=var))+
   geom_point()+
   geom_smooth(method = "lm",se=F)+
@@ -135,15 +136,29 @@ env_div%>%
         panel.border = element_blank(),panel.background = element_blank(),legend.position = "none")
 
 env_div%>%
-  gather(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
-  ggplot(aes(x=lake_elevation_nbr, y=value, colour=as.factor(actual_fish_presence)))+
+  gather(N0, N1,  E10, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
+  ggplot(aes(x=lake_elevation_nbr, y=value, colour=actual_fish_presence))+
   geom_point()+
   geom_smooth(method = "lm",se=F)+
   scale_color_viridis_d()+
   xlab("Elevation (m)")+
-  facet_grid(var~actual_fish_presence, scales = "free")+
+  facet_wrap(~var, scales = "free")+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.border = element_blank(),panel.background = element_blank(),legend.position = "none")
+        panel.border = element_blank(),panel.background = element_blank())
+
+dog<-lm(N0~lake_elevation_nbr, data=env_div)
+dog<-glm(N0~lake_elevation_nbr,family = poisson(link = "log"), data=env_div)
+summary(dog)
+r2(dog)
+
+dog<-lm(N1~lake_elevation_nbr, data=env_div)
+summary(dog)
+
+dog<-lm(betas.LCBD~lake_elevation_nbr, data=env_div)
+summary(dog)
+
+dog<-lm(Com.Size~lake_elevation_nbr, data=env_div)
+summary(dog)
 
 #Analysis:heres a looping linear model
 regional.names<-env_div %>%
@@ -164,14 +179,14 @@ dog[[1]] #or you can call on individual ones by replacing the number with 1:8
 #########################################################################
 #Diversity as a function of fish presence/absence
 env_div%>%
-  gather(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
+  gather(N0, N1,  E10, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
   ggplot(aes(x=actual_fish_presence, y=value, fill=actual_fish_presence))+
   geom_boxplot()+
   xlab("Fish Presence")+
-  scale_fill_viridis(discrete = TRUE)+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
   facet_wrap(~var, scales = "free")+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                                          panel.border = element_blank(),panel.background = element_blank(),legend.position = "none")
+                                          panel.border = element_blank(),panel.background = element_blank())
 
 #remove unwanted columns for analysis due to missing data
 env_divz<-env_div%>%
@@ -329,7 +344,7 @@ env_cwm%>%
   ggplot(aes(x=actual_fish_presence,y=CWM, fill=actual_fish_presence))+
   geom_boxplot()+
   xlab("Fish Presence")+
-  scale_fill_viridis(discrete = TRUE)+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank())
 
@@ -337,11 +352,27 @@ env_cwm%>%
   ggplot(aes(x=lake_elevation_nbr,y=CWM,colour=actual_fish_presence))+
   geom_point()+
   geom_smooth(method = "lm")+
-  scale_color_viridis_d()+
+  scale_color_viridis_d(name = "Fish Presence")+
   facet_grid(~actual_fish_presence)+
   xlab("Elevation (m)")+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank())
+
+fishless<-env_cwm%>%
+  filter(actual_fish_presence=="No")
+
+fish<-env_cwm%>%
+  filter(actual_fish_presence=="Yes")
+
+mod1<-lm(CWM~lake_elevation_nbr,  data=fishless)
+summary(mod1)
+
+mod1<-lm(CWM~lake_elevation_nbr,  data=fish)
+summary(mod1)
+
+mod0<-glm(CWM~actual_fish_presence,family=gaussian(link="identity"),env_cwm)
+summary(mod0)
+r2(mod0)
 
 #Analaysis: GLM's
 mod1<-glm(CWM~lake_elevation_nbr*actual_fish_presence,family=gaussian(link = "identity"),  data=env_cwm)
