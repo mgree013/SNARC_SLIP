@@ -164,6 +164,8 @@ r2(dog)
 
 dog<-lm(N1~lake_elevation_nbr, data=env_div)
 summary(dog)
+dog<-glm(N1~lake_elevation_nbr, family = gaussian(link="identity"),data=env_div)
+summary(dog)
 
 dog<-lm(betas.LCBD~lake_elevation_nbr, data=env_div)
 summary(dog)
@@ -171,6 +173,10 @@ summary(dog)
 dog<-lm(Com.Size~lake_elevation_nbr, data=env_div)
 summary(dog)
 
+dog<-glm(betas.LCBD~actual_fish_presence, family = gaussian(link="identity"),data=env_div)
+dog<-glm(N0~actual_fish_presence, family = poisson(link = "log"),data=env_div)
+summary(dog)
+r2(dog)
 #Analysis:heres a looping linear model
 regional.names<-env_div %>%
   dplyr::select(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD)
