@@ -490,5 +490,30 @@ semPaths(smod3.fit, what='std', layout = "tree3", intercepts = FALSE, residuals 
 #Conc:Elevation effects water and air temp, which have  direct negative effects on species richness
 
 ####################################################################################################################################################################################################################################################################################################
+#Mass Abundance
+
+species_all<-pivot_clean_zoopzz%>%rownames_to_column("Site")%>%pivot_longer(-Site, names_to="Taxon", values_to="abundance")%>%filter(abundance>0)
+envv<-env%>%dplyr::rename(Site=lake_id)
+
+body_size<-av_zoop_body_size_new%>%rownames_to_column("Taxon")
+
+All<-left_join(species_all,body_size, by="Taxon")
+envv$Site<-as.factor(envv$Site)
+All$Site<-as.factor(All$Site)
+All_all<-left_join(All,envv, by="Site")
+
+#Local Lakes Level
+All_all%>%
+  ggplot(aes(x=log(mean_body_size),y=log(abundance)))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+All_all%>%
+  ggplot(aes(x=mean_body_size,y=abundance, color=actual_fish_presence))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  facet_grid(~actual_fish_presence)
+
+#Network Level
 
 
