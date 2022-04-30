@@ -146,6 +146,17 @@ env_div%>%
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank())
 
+env_div%>%
+  gather(N0, N1,  E10, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
+  ggplot(aes(x=lake_elevation_nbr, y=value, colour=actual_fish_presence))+
+  geom_point()+
+  geom_smooth(method = "lm",se=F)+
+  scale_color_viridis_d()+
+  xlab("Elevation (m)")+
+  facet_grid(var~actual_fish_presence, scales = "free")+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank())
+
 dog<-lm(N0~lake_elevation_nbr, data=env_div)
 dog<-glm(N0~lake_elevation_nbr,family = poisson(link = "log"), data=env_div)
 summary(dog)
