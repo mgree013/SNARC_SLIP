@@ -177,6 +177,7 @@ dog<-glm(betas.LCBD~actual_fish_presence, family = gaussian(link="identity"),dat
 dog<-glm(N0~actual_fish_presence, family = poisson(link = "log"),data=env_div)
 summary(dog)
 r2(dog)
+
 #Analysis:heres a looping linear model
 regional.names<-env_div %>%
   dplyr::select(N0, H, N1, N2, E10, E20, J, Com.Size, betas.LCBD)
@@ -365,8 +366,22 @@ env_cwm%>%
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank())
 
+dog<-glm(CWM~actual_fish_presence*lake_elevation_nbr,family=gaussian(link="identity"),env_cwm)
+summary(dog)
+r2(dog)
+
 env_cwm%>%
   ggplot(aes(x=lake_elevation_nbr,y=CWM,colour=actual_fish_presence))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  scale_color_viridis_d(name = "Fish Presence")+
+  facet_grid(~actual_fish_presence)+
+  xlab("Elevation (m)")+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank())
+
+env_cwm%>%
+  ggplot(aes(x=log(lake_area_nbr+1),y=CWM,colour=actual_fish_presence))+
   geom_point()+
   geom_smooth(method = "lm")+
   scale_color_viridis_d(name = "Fish Presence")+
@@ -387,7 +402,7 @@ summary(mod1)
 mod1<-lm(CWM~lake_elevation_nbr,  data=fish)
 summary(mod1)
 
-mod0<-glm(CWM~actual_fish_presence,family=gaussian(link="identity"),env_cwm)
+mod0<-glm(N0~actual_fish_presence*lake_elevation_nbr*lake_max_depth,family=poisson(link ="log" ),env_div)
 summary(mod0)
 r2(mod0)
 
