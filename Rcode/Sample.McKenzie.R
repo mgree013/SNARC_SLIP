@@ -262,18 +262,38 @@ env_abund%>%
   ggplot(aes(x=actual_fish_presence,y=log(zoop_density+1),fill=actual_fish_presence))+
   geom_boxplot()+
   xlab("Fish Presence")+ylab("Log Density")+
-  scale_fill_viridis(discrete = TRUE)+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
   facet_wrap(~Species_Name, scales="free")+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                                                   panel.border = element_blank(),panel.background = element_blank())
 
 env_abund%>%
   ggplot(aes(x=Species_Name,y=(zoop_density),fill=actual_fish_presence))+
   geom_bar(stat = "identity")+
-  facet_wrap(~actual_fish_presence, scales="free")+
-  scale_fill_viridis(discrete = TRUE)+
+  #facet_wrap(~actual_fish_presence, scales="free")+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
   ylab("Zooplankton Density")+
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                                                                  panel.border = element_blank(),panel.background = element_blank())
+
+env_abund%>%
+  ggplot(aes(x=reorder(Species_Name, zoop_density, FUN = median),y=log(zoop_density+1),fill=actual_fish_presence))+
+  geom_boxplot()+
+  #facet_wrap(~actual_fish_presence, scales="free")+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
+  ylab("Zooplankton Density")+xlab("Zooplankton Species")+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                                                 panel.border = element_blank(),panel.background = element_blank())
+
+env_abund%>%
+  ggplot(aes(x=lake_elevation_nbr,y=log(zoop_density+1),color=Species_Name))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  #facet_wrap(~actual_fish_presence, scales="free")+
+  scale_color_viridis_d()+
+  ylab("Zooplankton Density")+
+  facet_wrap(~Species_Name, scales = "free")+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                                                 panel.border = element_blank(),panel.background = element_blank(), legend.position = "none")
 
 
 env_abund$Species_Name<-as.factor(env_abund$Species_Name)
