@@ -546,44 +546,16 @@ semPaths(smod3.fit, what='std', layout = "tree3", intercepts = FALSE, residuals 
 #Conc:Elevation effects water and air temp, which have  direct negative effects on species richness
 
 ####################################################################################################################################################################################################################################################################################################
-#Mass Abundance
-
-species_all<-pivot_clean_zoopzz%>%rownames_to_column("Site")%>%pivot_longer(-Site, names_to="Taxon", values_to="abundance")%>%filter(abundance>0)
-envv<-env%>%unite("Site",lake_id:survey_date)
-
-#body_size<-av_zoop_body_size_new%>%rownames_to_column("Taxon")
-
-av_zoop_body_size_new<-read.csv("data/length_mass_regress_zoop.csv")
-#av_zoop_body_size_new<-read.csv("data/body_mass.csv")
-
-body_size<-av_zoop_body_size_new%>%dplyr::select(-c(Mean_body_size_mm))
-
-
-All<-left_join(species_all,body_size, by="Taxon")
-envv$Site<-as.factor(envv$Site)
-All$Site<-as.factor(All$Site)
-All_all<-left_join(All,envv, by="Site")%>%filter(actual_fish_presence!="NA")
-
-#Local Lakes Level
-All_all%>%
-  ggplot(aes(x=log(Body_mass_ug),y=log(abundance)))+
-  geom_point()+
-  geom_smooth(method = "lm")+theme_bw()+
+#Fish by Elevation
+env_div%>%
+  ggplot(aes(x = actual_fish_presence, y = lake_elevation_nbr, fill=actual_fish_presence))+ 
+  geom_boxplot()+
   scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
+  xlab("Fish Presence")+
+  labs(fill='Elevation (m)') +
+  #scale_fill_discrete(name = "Fish Presence", labels = c("no", "yes"))+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_blank(),panel.background = element_blank())
-
-
-All_all%>%
-  #filter(Body_mass_ug>0.06)%>%
-  ggplot(aes(x=log(Body_mass_ug),y=log(abundance), colour=actual_fish_presence))+
-  geom_point()+
-  geom_smooth(method = "lm")+
-  scale_color_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
-  facet_grid(~actual_fish_presence)+theme_bw()+
-  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.border = element_blank(),panel.background = element_blank())
-
-#Network Level
+####################################################################################################################################################################################################################################################################################################
 
 
