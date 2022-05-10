@@ -122,7 +122,9 @@ mapview(snw_sf, zcol="actual_fish_presence", layer.name="Fish Presence")
 #2B) Explore Relationships among Diversity as a function of environmental variables: Visualization and Stats
 
 env_div<-left_join(env,local_diversity, by=c("lake_id", "survey_date"))%>%filter(lake_id !="11505" & lake_id !="42219" &lake_id !="71257" &lake_id !="71282" )%>%
-  mutate(Com.Size=log(Com.Size+1))
+  mutate(Com.Size=log(Com.Size+1))%>%
+  filter(HA>=0.5)%>%
+  filter(lake_elevation_nbr>=2800,lake_elevation_nbr<=3600 )
 
 env_div%>%
   gather(N0,  N1,  E10, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
