@@ -8,7 +8,7 @@
 
 
 #Load Packages
-Packages <- c("tidyverse", "ggplot2", "vegan", "reshape2","reshape", "adespatial", "sf", "mapview", "viridis", "FD","multcomp","semPlot","lavaan", "performance")
+Packages <- c("tidyverse","betareg" ,"ggplot2", "vegan", "reshape2","reshape", "adespatial", "sf", "mapview", "viridis", "FD","multcomp","semPlot","lavaan", "performance")
 lapply(Packages, library, character.only = TRUE)
 
 #Load all data: Run Script "Download_Slip_Data.R"
@@ -207,6 +207,20 @@ env_div%>%
   facet_wrap(~var, scales = "free")+
   theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                                           panel.border = element_blank(),panel.background = element_blank())
+
+env_div_av<-env_div%>%
+  filter(!is.na(N0))%>%
+  group_by(actual_fish_presence)%>%
+  summarise(mean_n1=mean(N1), meanN0=mean(N0), mean.beta=mean(betas.LCBD))
+
+mod<-glm(N0~actual_fish_presence, family=poisson(link="log"),env_div)
+summary(mod)
+
+mod<-glm(N1~actual_fish_presence, family=gaussian(link="identity"),env_div)
+summary(mod)
+
+mod<-betareg(betas.LCBD~actual_fish_presence,env_div)
+summary(mod)
 
 #remove unwanted columns for analysis due to missing data
 env_divz<-env_div%>%
