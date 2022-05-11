@@ -211,7 +211,7 @@ env_div%>%
 env_div_av<-env_div%>%
   filter(!is.na(N0))%>%
   group_by(actual_fish_presence)%>%
-  summarise(mean_n1=mean(N1), meanN0=mean(N0), mean.beta=mean(betas.LCBD))
+  summarise(mean_n1=mean(N1), meanN0=mean(N0), mean.beta=mean(betas.LCBD), mean.Com=mean(Com.Size))
 
 mod<-glm(N0~actual_fish_presence, family=poisson(link="log"),env_div)
 summary(mod)
@@ -219,8 +219,21 @@ summary(mod)
 mod<-glm(N1~actual_fish_presence, family=gaussian(link="identity"),env_div)
 summary(mod)
 
+mod<-glm(Com.Size~actual_fish_presence, family=gaussian(link="identity"),env_div)
+summary(mod)
+
 mod<-betareg(betas.LCBD~actual_fish_presence,env_div)
 summary(mod)
+
+env_div%>%
+  gather( N1, Com.Size, betas.LCBD,key = "var", value = "value")%>% 
+  ggplot(aes(x=actual_fish_presence, y=value, fill=as.factor(actual_fish_presence)))+
+  geom_boxplot()+
+  scale_fill_viridis(discrete = TRUE,name = "Fish Presence", labels = c("No", "Yes"))+
+  xlab("Fish Presence")+
+  facet_wrap(~var, scales = "free")+
+  theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),panel.background = element_blank())
 
 #remove unwanted columns for analysis due to missing data
 env_divz<-env_div%>%
