@@ -334,7 +334,27 @@ env_abundzzz%>%
 #Just Select Species that occur in fish and fishless sites
 env_abundz_filter<-env_abundzzz%>%
   group_by(Taxon,actual_fish_presence,Mean_body_size_mm)%>%
-  summarise(Total_density=sum(zoop_density))
+  summarise(Mean_density=mean(zoop_density))%>%
+  pivot_wider(names_from=actual_fish_presence,values_from =Mean_density )%>%
+  mutate(change_density=No-Yes, change_1_density=Yes-No)
+
+env_abundz_filter%>%
+  filter(change_density>0)%>%
+  ggplot(aes(x=log(Mean_body_size_mm+1),y=log(change_density+1)))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  ylab("Cahnge Zooplankton Density")+xlab("Zooplankton Body Size")+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                                                 panel.border = element_blank(),panel.background = element_blank())
+
+env_abundz_filter%>%
+  filter(change_1_density>0)%>%
+  ggplot(aes(x=log(Mean_body_size_mm+1),y=log(change_1_density+1)))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  ylab("Cahnge Zooplankton Density")+xlab("Zooplankton Body Size")+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+theme(axis.line = element_line(colour = "black"),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                                                 panel.border = element_blank(),panel.background = element_blank())
 
 
 env_abundz_filtered<-env_abundzzz%>%
